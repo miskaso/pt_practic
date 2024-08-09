@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block title %}
+Главная
+{% endblock %}
+{% block head %}
+<div class="container-md">
+<h1>{{ detail.title }}</h1>
+
+{% endblock %}
+{% block content %}
+
+<p>
+    <b>Книга:</b> {{detail.title}}<br>
+    <b>Автор:</b> {{detail.author}}<br>
+    <b>Год издания:</b> {{detail.public_year}}<br>
+    Оценка: {{ rewiew }}<br>
+
+    <b>Описание:</b><br> {{detail.desc}}<br><br>
+    <b>Скачать:</b><br> <a href="{{ detail.file.url }}">файл</a>
+</p>
+</div>
+
+{% endblock %}
+{% block foot %}
+{% endblock %}

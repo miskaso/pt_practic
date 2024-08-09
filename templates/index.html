@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block title %}
+Главная
+{% endblock %}
+{% block head %}
+
+<h1>Список книг: </h1>
+
+{% endblock %}
+{% block content %}
+{% for i in book %}
+<br><p>
+Название: {{ i.title }}<br>
+Автор: {{ i.author }}<br>
+Год издания: {{ i.public_year }}<br><br>
+<a href="{% url 'book' i.id %}" class="btn btn-primary">Перейти</a></p>
+{% endfor %}
+<div>
+    <span class="step-links">
+    {% if book.has_previous %}
+        <a href="?page2=1">&laquo; первая</a>
+        <a href="?page2={{ book.previous_page_number }}">предыдущая</a>
+    {% endif %}
+
+    <span class="current">
+        <small>Страница {{ book.number }} из {{ book.paginator.num_pages }}.</small>
+    </span>
+
+    {% if book.has_next %}
+        <a href="?page2={{ book.next_page_number }}">следующая</a>
+        <a href="?page2={{ book.paginator.num_pages }}">последняя &raquo;</a>
+    {% endif %}
+</span>
+
+</div>
+
+
+
+
+{% endblock %}
+{% block foot %}
+
+<h2>Список авторов:</h2>
+{% for i in authors %}
+Автор: {{ i.name }}<br><br>
+<a href="{% url 'author' i.id %}" class="btn btn-primary">Перейти</a><br><br>
+
+<div>
+    <span class="step-links">
+    {% if authors.has_previous %}
+        <a href="?page2=1">&laquo; первая</a>
+        <a href="?page2={{ authors.previous_page_number }}">предыдущая</a>
+    {% endif %}
+
+    <span class="current">
+        <small>Страница {{ authors.number }} из {{ authors.paginator.num_pages }}.</small>
+    </span>
+
+    {% if authors.has_next %}
+        <a href="?page2={{ authors.next_page_number }}">следующая</a>
+        <a href="?page2={{ authors.paginator.num_pages }}">последняя &raquo;</a>
+    {% endif %}
+</span>
+
+</div>
+{% endfor %}
+{% endblock %}
