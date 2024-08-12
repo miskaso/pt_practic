@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Author, Review
 from django.views.generic import DetailView, ListView
 from django.core.paginator import Paginator
+from .forms import ReviewForm
 
 # Create your views here.
 
@@ -42,3 +43,15 @@ class DetailAuthor(DetailView):
     template_name = 'detail_author.html'
     context_object_name = 'detail'
 
+
+def add_review(request):
+    book = request.GET.get('id')
+    form = ReviewForm(request.POST)
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.book = Book.objects.filter(id=book)
+        review.save()
+        return redirect('book', pk=book.pk)
+    else:
+        form = ReviewForm()
+    return render(request, 'review.html', {'form': form})

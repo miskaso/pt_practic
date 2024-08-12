@@ -16,7 +16,8 @@
     Оценка: {{ rewiew }}<br>
 
     <b>Описание:</b><br> {{detail.desc}}<br><br>
-    <b>Скачать:</b><br> <a href="{{ detail.file.url }}">файл</a>
+    <b>Скачать:</b><br> <a href="{{ detail.file.url }}">файл</a><br>
+    <a href="{% url 'add_review' detail.id %}"><b>Оценить</b></a><br>
 </p>
 </div>
 

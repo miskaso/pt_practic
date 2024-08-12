@@ -8,7 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('book/<int:pk>/', views.DetailBook.as_view(), name='book'),
     path('author/<int:pk>/', views.DetailAuthor.as_view(), name='author'),
-
+    path('review/<int:pk>', views.add_review, name='add_review'),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block title %} Оценить {% endblock %}
+
+
+{% block head %}
+
+
+{% endblock %}
+{% block content %}
+
+<form method="GET" action="{% url 'add_review' %}">
+    {{ form.as_p }}
+    <button type="submit">Отправить на модерирование</button>
+</form>
+
+{% endblock %}
+{% block foot %}
+
+
+{% endblock %}
+
