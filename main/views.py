@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Author, Review
 from django.views.generic import DetailView, ListView
 from django.core.paginator import Paginator
-from .forms import ReviewForm
+from .forms import ReviewForm, AddBookForm, AddAuthorForm
 
 # Create your views here.
 
@@ -44,14 +44,41 @@ class DetailAuthor(DetailView):
     context_object_name = 'detail'
 
 
-def add_review(request):
-    book = request.GET.get('id')
-    form = ReviewForm(request.POST)
+def add_review(request, book_id):
+    form = ReviewForm(request.GET)
     if form.is_valid():
         review = form.save(commit=False)
-        review.book = Book.objects.filter(id=book)
+        review.book = Book.objects.get(id=book_id)
         review.save()
-        return redirect('book', pk=book.pk)
+        return redirect('book', pk=book_id)
     else:
         form = ReviewForm()
     return render(request, 'review.html', {'form': form})
+
+
+def add_book(request):
+    if request.user.username == 'admin':
+        if request.method == 'POST':
+            form = AddBookForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('home')
+        else:
+            form = AddBookForm()
+
+        return render(request, 'add_book.html', {'form': form})
+    else:
+        return redirect('home')
+
+
+def add_author(request):
+    if request.user.username == 'admin':
+        form = AddAuthorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_book')
+        else:
+            form = AddAuthorForm()
+            return render(request, 'add_author.html', {"form": form})
+    else:
+        return redirect('home')

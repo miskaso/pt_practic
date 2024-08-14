@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+
+{% endblock %}
+{% block head %}
+<h1> Добавить автора </h1>
+
+{% endblock %}
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>
+
+{% endblock %}
+{% block foot %}
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Добвить книгу
+
+{% endblock %}
+{% block head %}
+<h1>Добавить книгу:</h1>
+
+{% endblock %}
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Создать</button>
+</form>
+
+
+{% endblock %}
+{% block foot %}
+<h4>Нет автора? <a href="{% url 'add_author' %}">Добавить автора </a></h4>
+
+{% endblock %}

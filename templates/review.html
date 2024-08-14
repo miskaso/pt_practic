@@ -9,7 +9,7 @@
 {% endblock %}
 {% block content %}
 
-<form method="GET" action="{% url 'add_review' %}">
+<form method="GET">
     {{ form.as_p }}
     <button type="submit">Отправить на модерирование</button>
 </form>
