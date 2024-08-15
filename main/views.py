@@ -1,8 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Author, Review
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, UpdateView
 from django.core.paginator import Paginator
 from .forms import ReviewForm, AddBookForm, AddAuthorForm
+from django.urls import reverse
+from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here.
 
@@ -27,15 +30,18 @@ class DetailBook(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         book = self.get_object()
-        rew = Review.objects.filter(book=book)
-        print(len(rew))
-        all_rew = len(rew)
-        sum = 0
-        for i in rew:
-            sum += i.rating
-        result = sum/all_rew
-        context['rewiew'] = result
-        return context
+        rew = Review.objects.filter(book=book, status=True)
+        if rew:
+            print(len(rew))
+            all_rew = len(rew)
+            sum = 0
+            for i in rew:
+                sum += i.rating
+            result = sum/all_rew
+            context['rewiew'] = result
+            return context
+        else:
+            return context
 
 
 class DetailAuthor(DetailView):
@@ -49,6 +55,7 @@ def add_review(request, book_id):
     if form.is_valid():
         review = form.save(commit=False)
         review.book = Book.objects.get(id=book_id)
+        review.status = False
         review.save()
         return redirect('book', pk=book_id)
     else:
@@ -82,3 +89,75 @@ def add_author(request):
             return render(request, 'add_author.html', {"form": form})
     else:
         return redirect('home')
+
+
+class UpdateBook(UpdateView):
+    model = Book
+    fields = ['title', 'desc']
+    template_name = 'update_book.html'
+
+    def get_success_url(self):
+        return reverse('book', kwargs={'pk': self.object.pk})
+
+
+def delete_book(req, pk):
+    if req.method == 'POST':
+        book = get_object_or_404(Book, id=pk)
+        book.delete()
+        return redirect('home')
+    else:
+        return redirect('home')
+
+
+class ReviewDetail(ListView):
+    model = Review
+    context_object_name = 'review'
+    template_name = 'view_review.html'
+
+
+def active_review(req, pk):
+    model = get_object_or_404(Review, id=pk)
+
+    if req.user.is_superuser:
+        model.status = True
+        model.save()
+        messages.success(req, 'Вы одобрили отзыв'+model)
+    else:
+        messages.error(req, 'У вас нет прав на изменение статуса этого отзыва.')
+    return redirect('review')
+
+
+def del_review(req, pk):
+    review = get_object_or_404(Review, id=pk)
+
+    # Проверяем права доступа
+    if req.user.is_superuser:
+        review.delete()
+        messages.success(req,
+                         'Отзыв успешно удален.')
+        return redirect('review')
+    else:
+        messages.error(req,
+                       'У вас нет прав на удаление этого отзыва.')
+        return redirect('review')
+
+
+from django.db.models import Q
+from django.shortcuts import render
+from .models import Book
+
+def get_search(request):
+    data = request.GET.get('data', '')
+
+    q_object = Q()
+
+    if data:
+        if data.isdigit():
+            q_object |= Q(public_year__icontains=data)
+        else:
+            q_object |= Q(title__icontains=data) | Q(
+                author__name__icontains=data)
+
+    search_results = Book.objects.filter(q_object) if data else Book.objects.none()
+
+    return render(request, 'search.html', {'search': search_results})

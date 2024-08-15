@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block title %} Результаты поиска {% endblock %}
+
+
+{% block head %}
+
+<form class="d-flex" role="search" method="GET"
+            action="{% url 'search' %}">
+        <label for="search">Поиск книг:</label>
+
+        <input class="form-control me-2" type="search" placeholder="Search"
+               aria-label="Search" id="search" name="data"
+               value="{{ request.GET.data }}">
+
+        <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+{% endblock %}
+{% block content %}
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <span class="navbar-text">
+      <h2>Результаты поиска</h2>
+    </span>
+  </div>
+</nav>
+
+<ul>
+  {% for i in search %}
+  <li>
+    <h4><small>Название:</small> <b>{{ i.title }}</b></h4>
+<h6> {{ i.author }}</h6><a href="{% url 'book' i.id %}"
+                         class="btn btn-primary">Открыть
+</a>
+  </li>
+  {% empty %}
+  <li>Ничего не найдено.</li>
+</ul>
+{% endfor %}
+
+{% endblock %}
+{% block foot %}
+
+
+{% endblock %}
+

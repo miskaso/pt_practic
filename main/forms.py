@@ -6,12 +6,15 @@ import os
 
 
 class ReviewForm(forms.ModelForm):
-    rating = forms.IntegerField(min_value=1, max_value=5)
+    rating = forms.IntegerField(min_value=1, max_value=5, label='Выбрать '
+                                                                'оценку')
 
     class Meta:
         model = Review
         fields = ['rating', 'text']
-
+        labels = {
+            'text': 'Ваш отзыв'
+        }
         widgets = {
             'text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Запишите ваш отзыв'}),
         }
@@ -27,19 +30,18 @@ class AddBookForm(forms.ModelForm):
                 days=1)).strftime('%Y-%m-%d'),
             'placeholder': 'Выберите дату'
         }),
-        input_formats=['%Y-%m-%d']
-    )
-
-    file = forms.FileField(
-        widget=forms.FileInput(attrs={
-            'class': 'form-control',
-            'accept': '.pdf,.txt'
-        })
+        input_formats=['%Y-%m-%d'], label='Дата'
     )
 
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ['title', 'author', 'desc', 'public_year']
+
+        labels = {
+            'title': 'Заголовок',
+            'author': 'Автор',
+            'desc': 'Описание'
+        }
         widgets = {
             'desc': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -55,15 +57,6 @@ class AddBookForm(forms.ModelForm):
             })
         }
 
-    def clean_file(self):
-        file = self.cleaned_data.get('file')
-        ext = os.path.splitext(file.name)[1]
-        valid_extensions = ['.pdf', '.txt']
-        if ext.lower() not in valid_extensions:
-            raise forms.ValidationError(
-                'Неверный формат файла. Допустимы только .pdf и .txt')
-        return file
-
     def clean_public_year(self):
         date_str = self.cleaned_data['public_year']
         if isinstance(date_str, datetime.date):
@@ -75,6 +68,10 @@ class AddAuthorForm(forms.ModelForm):
     class Meta:
         model = Author
         fields = '__all__'
+        labels = {
+            'name': 'Имя автора',
+            'bio': 'Биография'
+        }
 
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control',

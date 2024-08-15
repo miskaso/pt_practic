@@ -26,6 +26,7 @@ class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     rating = models.IntegerField()
     text = models.TextField()
+    status = models.BooleanField()
 
     def __str__(self):
         return f'{self.book} {self.rating}'

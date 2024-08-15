@@ -13,11 +13,22 @@
     <b>Книга:</b> {{detail.title}}<br>
     <b>Автор:</b> {{detail.author}}<br>
     <b>Год издания:</b> {{detail.public_year}}<br>
-    Оценка: {{ rewiew }}<br>
+    Оценка: {% if rewiew %} {{ rewiew }} {% else %} нет отзывов {% endif %}<br>
 
     <b>Описание:</b><br> {{detail.desc}}<br><br>
-    <b>Скачать:</b><br> <a href="{{ detail.file.url }}">файл</a><br>
-    <a href="{% url 'add_review' detail.id %}"><b>Оценить</b></a><br>
+    <b>Скачать:</b><br>
+    {% if detail.file %}
+        <a href="{{ detail.file.url }}">файл</a><br>
+    {% else %}
+    <h6>Ссылка пока не доступна.</h6>
+    {% endif %}
+    <a href="{% url 'add_review' detail.id %}"><b>Оценить</b></a><br><br>
+    <a href="{% url 'update' detail.id %}" class="btn btn-warning">Изменить</a><br>
+    <form method="post" action="{% url 'delete' detail.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>
+
 </p>
 </div>
 

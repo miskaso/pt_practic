@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+Отзывы
+{% endblock %}
+{% block head %}
+<h1>Отзывы:</h1>
+{% if messages %}
+    <ul>
+    {% for message in messages %}
+        <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}
+{% block content %}
+
+{% for i in review %}
+Книга: {{ i.book }} <br>
+Отзыв: {{ i.text }} <br>
+Оценка: {{ i.rating }} <br>
+{% if request.user.is_superuser %}
+Статус: {{ i.status }}<br><br>
+{% if i.status == False %}
+<a href="{% url 'active' i.id %}" class="btn btn-warning">Разрешить</a><br>
+{% endif %}
+<form method="post" action="{% url 'delete' i.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Удалить</button>
+</form>
+
+{% endif %}
+
+<br>
+
+
+{% endfor %}
+
+{% endblock %}
+{% block foot %}
+
+
+{% endblock %}

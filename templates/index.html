@@ -5,7 +5,13 @@
 {% block head %}
 
 <h1>Список книг: </h1>
-
+{% if messages %}
+    <ul>
+    {% for message in messages %}
+        <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
 {% endblock %}
 {% block content %}
 {% for i in book %}
@@ -45,7 +51,8 @@
 Автор: {{ i.name }}<br><br>
 <a href="{% url 'author' i.id %}" class="btn btn-primary">Перейти</a><br><br>
 
-<div>
+
+{% endfor %}<div>
     <span class="step-links">
     {% if authors.has_previous %}
         <a href="?page2=1">&laquo; первая</a>
@@ -63,7 +70,6 @@
 </span>
 
 
-</div>
-<br><br>
-{% endfor %}<a href="{% url 'add_book' %}" class="btn btn-warning">Добавить книгу</a>
+</div><br><br><a href="{% url 'add_book' %}" class="btn btn-warning">Добавить книгу</a>
+<a href="{% url 'review' %}">Отзывы</a>
 {% endblock %}
