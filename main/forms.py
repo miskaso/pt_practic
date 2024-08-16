@@ -5,6 +5,31 @@ import datetime
 import os
 
 
+class ApiForm(forms.Form):
+    prov_choices = [
+        ("replicate/anime-style", "replicate/anime-style"),
+        ("replicate", "replicate"),
+        ("replicate/vintedois-diffusion", "replicate/vintedois-diffusion"),
+        ("replicate/classic", "replicate/classic"),
+        ("amazon/titan-image-generator-v1_standard", "amazon/titan-image-generator-v1_standard"),
+        ("openai/dall-e-3", "openai/dall-e-3"),
+    ]
+    res_choices = [
+        ("1792x1024", "1792x1024"),
+        ("1024x1024", "1024x1024"),
+        ("512x512", "512x512"),
+        ("256x256", "256x256"),
+    ]
+    providers = forms.ChoiceField(choices=prov_choices, label='Выберите провайдера:')
+    text = forms.CharField(max_length=255, label='Введите ваш запрос')
+    resolution = forms.ChoiceField(choices=res_choices, label='Выберите размер:')
+
+
+
+
+
+
+
 class ReviewForm(forms.ModelForm):
     rating = forms.IntegerField(min_value=1, max_value=5, label='Выбрать '
                                                                 'оценку')

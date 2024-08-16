@@ -2,12 +2,38 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Author, Review
 from django.views.generic import DetailView, ListView, UpdateView
 from django.core.paginator import Paginator
-from .forms import ReviewForm, AddBookForm, AddAuthorForm
+from .forms import ReviewForm, AddBookForm, AddAuthorForm, ApiForm
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Q
+import json
+import requests
 
 # Create your views here.
+
+
+def go_api(request):
+    if request.method == 'POST':
+        form = ApiForm(request.POST)
+        if form.is_valid():
+            headers = {
+                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOTMwYWY4ZWQtNTFkZi00Y2M3LTkwYTYtNDQwMjU5ZjgwNTY3IiwidHlwZSI6ImFwaV90b2tlbiJ9.x-4w65QfUcblhUpwOMUJVPgpOM-oWXln3TD0TxGI4HI"
+            }
+            url = "https://api.edenai.run/v2/image/generation"
+            print(form.cleaned_data['text'])
+            data_user = {
+                'providers': form.cleaned_data['providers'],
+                'text': form.cleaned_data['text'],
+                'resolution': form.cleaned_data['resolution']
+            }
+
+            response = requests.post(url, json=data_user, headers=headers)
+            result = json.loads(response.text)
+            img = result[data_user['providers']]['items'][0]['image_resource_url']
+
+            return render(request, 'api.html', {"form": form, "result": img})
+    form = ApiForm()
+    return render(request, 'api.html', {'form': form})
 
 
 def home(req):
@@ -141,10 +167,6 @@ def del_review(req, pk):
                        'У вас нет прав на удаление этого отзыва.')
         return redirect('review')
 
-
-from django.db.models import Q
-from django.shortcuts import render
-from .models import Book
 
 def get_search(request):
     data = request.GET.get('data', '')

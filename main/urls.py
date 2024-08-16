@@ -17,6 +17,7 @@ urlpatterns = [
     path('review/active/<int:pk>/', views.active_review, name='active'),
     path('review/del/<int:pk>', views.del_review, name='delete'),
     path('search/', views.get_search, name='search'),
+    path('api/', views.go_api, name='api'),
 
 
 

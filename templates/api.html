@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+
+
+{% endblock %}
+{% block head %}
+
+<h1>Ищем</h1>
+
+{% endblock %}
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Найти</button>
+</form>
+
+{% if result %}
+    <img src="{{ result }}">
+    <br>
+    <br>
+    <br>
+    <a href="{{ result }}" class="btn btn-warning">Скачать</a>
+{% endif %}
+
+{% endblock %}
+{% block foot %}
+
+
+{% endblock %}
